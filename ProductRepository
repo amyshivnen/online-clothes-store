@@ -1,0 +1,18 @@
+package com.OnlineClothesStore.ClothesStore.repository;
+
+import com.OnlineClothesStore.ClothesStore.model.Product;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+
+import java.util.List;
+
+public interface ProductRepository extends JpaRepository<Product, Long> {
+
+    @Query("""
+        SELECT p FROM Product p
+        WHERE LOWER(p.title) LIKE LOWER(CONCAT('%', ?1, '%'))
+           OR LOWER(p.category) LIKE LOWER(CONCAT('%', ?1, '%'))
+           OR LOWER(p.manufacturer) LIKE LOWER(CONCAT('%', ?1, '%'))
+    """)
+    List<Product> searchProducts(String keyword);
+}

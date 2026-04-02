@@ -1,0 +1,65 @@
+package com.OnlineClothesStore.ClothesStore.service;
+
+import com.OnlineClothesStore.ClothesStore.model.CartItem;
+import com.OnlineClothesStore.ClothesStore.model.Product;
+import com.OnlineClothesStore.ClothesStore.model.User;
+import com.OnlineClothesStore.ClothesStore.repository.CartRepository;
+import com.OnlineClothesStore.ClothesStore.repository.ProductRepository;
+import com.OnlineClothesStore.ClothesStore.repository.UserRepository;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public class CartService {
+
+    private final CartRepository cartRepository;
+    private final ProductRepository productRepository;
+    private final UserRepository userRepository;
+
+    public CartService(CartRepository cartRepository,
+                       ProductRepository productRepository,
+                       UserRepository userRepository) {
+        this.cartRepository = cartRepository;
+        this.productRepository = productRepository;
+        this.userRepository = userRepository;
+    }
+
+    public void addToCart(Long userId, Long productId) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new IllegalArgumentException("Product not found"));
+
+        if (product.getStockQuantity() == null || product.getStockQuantity() <= 0) {
+            throw new IllegalStateException("This product is out of stock.");
+        }
+
+        CartItem existing = cartRepository.findByUserIdAndProductId(userId, productId);
+
+        if (existing != null) {
+            int requestedQuantity = existing.getQuantity() + 1;
+            if (requestedQuantity > product.getStockQuantity()) {
+                throw new IllegalStateException("You cannot add more items than are currently in stock.");
+            }
+            existing.setQuantity(requestedQuantity);
+            cartRepository.save(existing);
+            return;
+        }
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        CartItem item = new CartItem();
+        item.setUser(user);
+        item.setProduct(product);
+        item.setQuantity(1);
+        cartRepository.save(item);
+    }
+
+    public List<CartItem> getCart(Long userId) {
+        return cartRepository.findByUserId(userId);
+    }
+
+    public void removeFromCart(Long id) {
+        cartRepository.deleteById(id);
+    }
+}

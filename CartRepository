@@ -1,0 +1,13 @@
+package com.OnlineClothesStore.ClothesStore.repository;
+
+import com.OnlineClothesStore.ClothesStore.model.CartItem;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
+
+public interface CartRepository extends JpaRepository<CartItem, Long> {
+
+    List<CartItem> findByUserId(Long userId);
+
+    CartItem findByUserIdAndProductId(Long userId, Long productId);
+}

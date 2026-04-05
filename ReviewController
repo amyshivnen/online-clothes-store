@@ -1,0 +1,57 @@
+package com.OnlineClothesStore.ClothesStore.controller;
+
+import com.OnlineClothesStore.ClothesStore.model.Product;
+import com.OnlineClothesStore.ClothesStore.model.Review;
+import com.OnlineClothesStore.ClothesStore.model.User;
+import com.OnlineClothesStore.ClothesStore.service.ProductService;
+import com.OnlineClothesStore.ClothesStore.service.ReviewService;
+import com.OnlineClothesStore.ClothesStore.service.UserService;
+import jakarta.validation.Valid;
+import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+@Controller
+@RequestMapping("/reviews")
+public class ReviewController {
+
+    private final ReviewService reviewService;
+    private final ProductService productService;
+    private final UserService userService;
+
+    public ReviewController(ReviewService reviewService,
+                            ProductService productService,
+                            UserService userService) {
+        this.reviewService = reviewService;
+        this.productService = productService;
+        this.userService = userService;
+    }
+
+    @PostMapping("/save/{productId}")
+    public String saveReview(@PathVariable Long productId,
+                             @Valid @ModelAttribute("review") Review review,
+                             BindingResult result,
+                             Model model,
+                             Authentication authentication) {
+
+        Product product = productService.getProductById(productId);
+
+        if (result.hasErrors()) {
+            model.addAttribute("product", product);
+            model.addAttribute("reviews", reviewService.getReviewsByProductId(productId));
+            return "product-details";
+        }
+
+        User user = userService.getUserByEmail(authentication.getName());
+        review.setProduct(product);
+        review.setUser(user);
+        reviewService.saveReview(review);
+
+        return "redirect:/products/" + productId;
+    }
+}

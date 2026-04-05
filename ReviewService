@@ -1,0 +1,25 @@
+package com.OnlineClothesStore.ClothesStore.service;
+
+import com.OnlineClothesStore.ClothesStore.model.Review;
+import com.OnlineClothesStore.ClothesStore.repository.ReviewRepository;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public class ReviewService {
+
+    private final ReviewRepository reviewRepository;
+
+    public ReviewService(ReviewRepository reviewRepository) {
+        this.reviewRepository = reviewRepository;
+    }
+
+    public List<Review> getReviewsByProductId(Long productId) {
+        return reviewRepository.findByProductId(productId);
+    }
+
+    public Review saveReview(Review review) {
+        return reviewRepository.save(review);
+    }
+}

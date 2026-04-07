@@ -12,31 +12,37 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "First name is required")
+    @NotBlank
+    @Column(name = "first_name")
     private String firstName;
 
-    @NotBlank(message = "Last name is required")
+    @NotBlank
+    @Column(name = "last_name")
     private String lastName;
 
-    @Email(message = "Enter a valid email")
-    @NotBlank(message = "Email is required")
-    @Column(unique = true)
+    @Email
+    @NotBlank
+    @Column(unique = true, nullable = false)
     private String email;
 
-    @NotBlank(message = "Password is required")
+    @NotBlank
+    @Column(nullable = false)
     private String password;
 
-    @NotBlank(message = "Role is required")
+    @NotBlank
+    @Column(nullable = false)
     private String role;
 
-    @NotBlank(message = "Shipping address is required")
+    @NotBlank
+    @Column(name = "shipping_address")
     private String shippingAddress;
 
-    @NotBlank(message = "Payment method is required")
+    @NotBlank
+    @Column(name = "payment_method")
     private String paymentMethod;
 
-    public User() {
-    }
+    public User() {}
+
 
     public Long getId() {
         return id;

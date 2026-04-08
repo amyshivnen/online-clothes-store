@@ -1,21 +1,28 @@
 package com.OnlineClothesStore.ClothesStore.controller;
 
 import com.OnlineClothesStore.ClothesStore.model.User;
+import com.OnlineClothesStore.ClothesStore.service.OrderService;
 import com.OnlineClothesStore.ClothesStore.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping("/users")
 public class UserController {
 
     private final UserService userService;
+    private final OrderService orderService;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, OrderService orderService) {
         this.userService = userService;
+        this.orderService = orderService;
     }
 
     @GetMapping("/register")
@@ -36,16 +43,23 @@ public class UserController {
         }
 
         if (result.hasErrors()) {
+            model.addAttribute("user", user);
             return "register";
         }
 
+        user.setRole("ROLE_CUSTOMER");
         userService.saveUser(user);
-        return "redirect:/users/list";
+        return "redirect:/login";
     }
 
-    @GetMapping("/list")
-    public String listUsers(Model model) {
-        model.addAttribute("users", userService.getAllUsers());
-        return "users";
+    @GetMapping("/{id}")
+    public String viewUserDetails(@PathVariable Long id, Model model) {
+        User user = userService.getUserById(id);
+        if (user == null) {
+            return "redirect:/admin/users";
+        }
+        model.addAttribute("selectedUser", user);
+        model.addAttribute("purchaseHistory", orderService.getOrdersForUser(id));
+        return "user-details";
     }
 }

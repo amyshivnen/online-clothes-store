@@ -1,0 +1,37 @@
+package com.OnlineClothesStore.ClothesStore.controller;
+
+import com.OnlineClothesStore.ClothesStore.model.Order;
+import com.OnlineClothesStore.ClothesStore.model.User;
+import com.OnlineClothesStore.ClothesStore.service.OrderService;
+import com.OnlineClothesStore.ClothesStore.service.UserService;
+import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+@Controller
+@RequestMapping("/order")
+public class CheckoutController {
+
+    private final OrderService orderService;
+    private final UserService userService;
+
+    public CheckoutController(OrderService orderService, UserService userService) {
+        this.orderService = orderService;
+        this.userService = userService;
+    }
+
+    @GetMapping("/checkout")
+    public String checkout(Authentication authentication, RedirectAttributes redirectAttributes) {
+        try {
+            User user = userService.getUserByEmail(authentication.getName());
+            Order order = orderService.checkout(user.getId());
+            redirectAttributes.addFlashAttribute("successMessage", "Order placed successfully.");
+            return "redirect:/orders/" + order.getId();
+        } catch (RuntimeException ex) {
+            redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
+            return "redirect:/cart";
+        }
+    }
+}

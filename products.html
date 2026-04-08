@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <title>Products</title>
+</head>
+<body>
+
+<h1>Products</h1>
+
+<p th:if="${successMessage}" th:text="${successMessage}"></p>
+<p th:if="${errorMessage}" th:text="${errorMessage}"></p>
+
+<form th:action="@{/products}" method="get">
+    <input type="text" name="keyword" placeholder="Search by title, category or manufacturer" th:value="${keyword}">
+    <button type="submit">Search</button>
+</form>
+
+<p>
+    Sort:
+    <a th:href="@{/products(sortField='title', sortDir='asc')}">Title Asc</a> |
+    <a th:href="@{/products(sortField='title', sortDir='desc')}">Title Desc</a> |
+    <a th:href="@{/products(sortField='manufacturer', sortDir='asc')}">Manufacturer Asc</a> |
+    <a th:href="@{/products(sortField='manufacturer', sortDir='desc')}">Manufacturer Desc</a> |
+    <a th:href="@{/products(sortField='price', sortDir='asc')}">Price Asc</a> |
+    <a th:href="@{/products(sortField='price', sortDir='desc')}">Price Desc</a>
+</p>
+
+<p sec:authorize="hasRole('ADMIN')">
+    <a th:href="@{/products/new}">Add New Product</a>
+</p>
+
+<table border="1">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Manufacturer</th>
+            <th>Category</th>
+            <th>Price</th>
+            <th>Stock</th>
+            <th>Image URL</th>
+            <th>Description</th>
+            <th>Action</th>
+            <th sec:authorize="hasRole('ADMIN')">Restock</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr th:each="product : ${products}">
+            <td th:text="${product.id}"></td>
+            <td th:text="${product.title}"></td>
+            <td th:text="${product.manufacturer}"></td>
+            <td th:text="${product.category}"></td>
+            <td th:text="${product.price}"></td>
+            <td th:text="${product.stockQuantity}"></td>
+            <td th:text="${product.imageUrl}"></td>
+            <td th:text="${product.description}"></td>
+            <td>
+                <a th:href="@{/products/{id}(id=${product.id})}">View</a>
+                <span sec:authorize="hasRole('ADMIN')">
+                    |
+                    <a th:href="@{/products/edit/{id}(id=${product.id})}">Edit</a>
+                    |
+                    <a th:href="@{/products/delete/{id}(id=${product.id})}"
+                       onclick="return confirm('Are you sure you want to delete this product?');">Delete</a>
+                </span>
+            </td>
+            <td sec:authorize="hasRole('ADMIN')">
+                <form th:action="@{/admin/products/restock/{id}(id=${product.id})}" method="post">
+                    <input type="number" name="quantity" min="1" placeholder="Qty" required>
+                    <button type="submit">Restock</button>
+                </form>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<p><a th:href="@{/}">Home</a></p>
+
+</body>
+</html>

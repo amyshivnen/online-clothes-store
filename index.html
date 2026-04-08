@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <title>Clothes Store</title>
+</head>
+<body>
+<h1>Welcome to the Online Clothes Store</h1>
+
+<p><a th:href="@{/products}">Browse Products</a></p>
+<p sec:authorize="!isAuthenticated()"><a th:href="@{/users/register}">Register</a></p>
+<p sec:authorize="!isAuthenticated()"><a th:href="@{/login}">Login</a></p>
+<p sec:authorize="isAuthenticated()"><a th:href="@{/cart}">My Cart</a></p>
+<p sec:authorize="isAuthenticated()"><a th:href="@{/orders}">My Orders</a></p>
+<p sec:authorize="hasRole('ADMIN')"><a th:href="@{/admin}">Admin Dashboard</a></p>
+<form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post">
+    <button type="submit">Logout</button>
+</form>
+</body>
+</html>

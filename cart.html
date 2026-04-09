@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Cart</title>
+</head>
+<body>
+
+<h1>Your Cart</h1>
+
+<p th:if="${successMessage}" th:text="${successMessage}"></p>
+<p th:if="${errorMessage}" th:text="${errorMessage}"></p>
+
+<table border="1">
+    <tr>
+        <th>Product</th>
+        <th>Quantity</th>
+        <th>Price</th>
+        <th>Subtotal</th>
+        <th>Action</th>
+    </tr>
+
+    <tr th:each="item : ${cartItems}">
+        <td th:text="${item.product.title}"></td>
+        <td th:text="${item.quantity}"></td>
+        <td th:text="${item.product.price}"></td>
+        <td th:text="${item.product.price * item.quantity}"></td>
+        <td>
+            <a th:href="@{/cart/remove/{id}(id=${item.id})}">Remove</a>
+        </td>
+    </tr>
+</table>
+
+<p><a th:href="@{/products}">Continue Shopping</a></p>
+<p><a th:href="@{/order/checkout}">Checkout</a></p>
+
+</body>
+</html>

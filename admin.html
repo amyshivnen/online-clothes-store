@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Admin Dashboard</title>
+</head>
+<body>
+
+<h1>Admin Dashboard</h1>
+
+<p>Total Products: <span th:text="${productCount}"></span></p>
+<p>Total Users: <span th:text="${userCount}"></span></p>
+<p>Total Orders: <span th:text="${orderCount}"></span></p>
+
+<ul>
+    <li><a th:href="@{/products}">Manage Products</a></li>
+    <li><a th:href="@{/admin/users}">View Users</a></li>
+    <li><a th:href="@{/admin/orders}">View Orders</a></li>
+</ul>
+
+<p>Default admin login: admin@clothesstore.com / admin123</p>
+<p><a th:href="@{/}">Home</a></p>
+
+</body>
+</html>

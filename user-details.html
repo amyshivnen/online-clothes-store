@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>User Details</title>
+</head>
+<body>
+
+<h1>User Details</h1>
+
+<p><strong>Name:</strong> <span th:text="${selectedUser.firstName + ' ' + selectedUser.lastName}"></span></p>
+<p><strong>Email:</strong> <span th:text="${selectedUser.email}"></span></p>
+<p><strong>Role:</strong> <span th:text="${selectedUser.role}"></span></p>
+<p><strong>Shipping Address:</strong> <span th:text="${selectedUser.shippingAddress}"></span></p>
+<p><strong>Payment Method:</strong> <span th:text="${selectedUser.paymentMethod}"></span></p>
+
+<h2>Purchase History</h2>
+<div th:if="${#lists.isEmpty(purchaseHistory)}">
+    <p>This user has not placed any orders yet.</p>
+</div>
+<table th:if="${!#lists.isEmpty(purchaseHistory)}" border="1">
+    <tr>
+        <th>Order ID</th>
+        <th>Date</th>
+        <th>Total</th>
+        <th>Status</th>
+        <th>Action</th>
+    </tr>
+    <tr th:each="order : ${purchaseHistory}">
+        <td th:text="${order.id}"></td>
+        <td th:text="${order.orderDate}"></td>
+        <td th:text="${order.totalPrice}"></td>
+        <td th:text="${order.status}"></td>
+        <td><a th:href="@{/orders/{id}(id=${order.id})}">View</a></td>
+    </tr>
+</table>
+
+<p><a th:href="@{/admin/users}">Back to Users</a></p>
+
+</body>
+</html>

@@ -2,39 +2,51 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>User Details</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
 
-<h1>User Details</h1>
+<div class="container">
+    <section class="page-header">
+        <h1>User Details</h1>
+        <p>Customer profile and purchase history.</p>
+    </section>
 
-<p><strong>Name:</strong> <span th:text="${selectedUser.firstName + ' ' + selectedUser.lastName}"></span></p>
-<p><strong>Email:</strong> <span th:text="${selectedUser.email}"></span></p>
-<p><strong>Role:</strong> <span th:text="${selectedUser.role}"></span></p>
-<p><strong>Shipping Address:</strong> <span th:text="${selectedUser.shippingAddress}"></span></p>
-<p><strong>Payment Method:</strong> <span th:text="${selectedUser.paymentMethod}"></span></p>
+    <div class="card details-list">
+        <p><strong>Name:</strong> <span th:text="${selectedUser.firstName + ' ' + selectedUser.lastName}"></span></p>
+        <p><strong>Email:</strong> <span th:text="${selectedUser.email}"></span></p>
+        <p><strong>Role:</strong> <span th:text="${selectedUser.role}"></span></p>
+        <p><strong>Shipping Address:</strong> <span th:text="${selectedUser.shippingAddress}"></span></p>
+        <p><strong>Payment Method:</strong> <span th:text="${selectedUser.paymentMethod}"></span></p>
+    </div>
 
-<h2>Purchase History</h2>
-<div th:if="${#lists.isEmpty(purchaseHistory)}">
-    <p>This user has not placed any orders yet.</p>
+    <div class="table-card">
+        <h2 style="margin-bottom: 16px; color: var(--primary-dark);">Purchase History</h2>
+
+        <div th:if="${#lists.isEmpty(purchaseHistory)}" class="empty-state">
+            <p>This user has not placed any orders yet.</p>
+        </div>
+
+        <table th:if="${!#lists.isEmpty(purchaseHistory)}">
+            <tr>
+                <th>Order ID</th>
+                <th>Date</th>
+                <th>Total</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+            <tr th:each="order : ${purchaseHistory}">
+                <td th:text="${order.id}"></td>
+                <td th:text="${order.orderDate}"></td>
+                <td>€<span th:text="${order.totalPrice}"></span></td>
+                <td><span class="badge" th:text="${order.status}"></span></td>
+                <td><a class="btn btn-primary" th:href="@{/orders/{id}(id=${order.id})}">View</a></td>
+            </tr>
+        </table>
+    </div>
+
+    <a class="footer-link" th:href="@{/admin/users}">← Back to Users</a>
 </div>
-<table th:if="${!#lists.isEmpty(purchaseHistory)}" border="1">
-    <tr>
-        <th>Order ID</th>
-        <th>Date</th>
-        <th>Total</th>
-        <th>Status</th>
-        <th>Action</th>
-    </tr>
-    <tr th:each="order : ${purchaseHistory}">
-        <td th:text="${order.id}"></td>
-        <td th:text="${order.orderDate}"></td>
-        <td th:text="${order.totalPrice}"></td>
-        <td th:text="${order.status}"></td>
-        <td><a th:href="@{/orders/{id}(id=${order.id})}">View</a></td>
-    </tr>
-</table>
-
-<p><a th:href="@{/admin/users}">Back to Users</a></p>
 
 </body>
 </html>

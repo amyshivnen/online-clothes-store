@@ -2,37 +2,45 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Orders</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
 
-<h1 th:text="${pageTitle}">Orders</h1>
+<div class="container">
+    <section class="page-header">
+        <h1 th:text="${pageTitle}">Orders</h1>
+        <p>Track your boutique purchases beautifully.</p>
+    </section>
 
-<p th:if="${successMessage}" th:text="${successMessage}"></p>
-<p th:if="${errorMessage}" th:text="${errorMessage}"></p>
+    <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+    <div th:if="${errorMessage}" class="alert alert-error" th:text="${errorMessage}"></div>
 
-<table border="1">
-    <tr>
-        <th>ID</th>
-        <th>Date</th>
-        <th>Customer</th>
-        <th>Total</th>
-        <th>Status</th>
-        <th>Action</th>
-    </tr>
+    <div class="table-card">
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Date</th>
+                <th>Customer</th>
+                <th>Total</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
 
-    <tr th:each="order : ${orders}">
-        <td th:text="${order.id}"></td>
-        <td th:text="${order.orderDate}"></td>
-        <td th:text="${order.user != null ? order.user.firstName + ' ' + order.user.lastName : 'N/A'}"></td>
-        <td th:text="${order.totalPrice}"></td>
-        <td th:text="${order.status}"></td>
-        <td>
-            <a th:href="@{/orders/{id}(id=${order.id})}">View</a>
-        </td>
-    </tr>
-</table>
+            <tr th:each="order : ${orders}">
+                <td th:text="${order.id}"></td>
+                <td th:text="${order.orderDate}"></td>
+                <td th:text="${order.user != null ? order.user.firstName + ' ' + order.user.lastName : 'N/A'}"></td>
+                <td>€<span th:text="${order.totalPrice}"></span></td>
+                <td><span class="badge" th:text="${order.status}"></span></td>
+                <td>
+                    <a class="btn btn-primary" th:href="@{/orders/{id}(id=${order.id})}">View</a>
+                </td>
+            </tr>
+        </table>
+    </div>
 
-<p><a th:href="@{/products}">Back to Products</a></p>
+    <a class="footer-link" th:href="@{/products}">← Back to Products</a>
+</div>
 
 </body>
 </html>

@@ -1,20 +1,40 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<head>
-    <title>Clothes Store</title>
-</head>
+	  <head>
+	      <meta charset="UTF-8">
+	      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	      <title>Pink Boutique</title>
+	      <link rel="stylesheet" href="/css/style.css">
+	  </head>
 <body>
-<h1>Welcome to the Online Clothes Store</h1>
 
-<p><a th:href="@{/products}">Browse Products</a></p>
-<p sec:authorize="!isAuthenticated()"><a th:href="@{/users/register}">Register</a></p>
-<p sec:authorize="!isAuthenticated()"><a th:href="@{/login}">Login</a></p>
-<p sec:authorize="isAuthenticated()"><a th:href="@{/cart}">My Cart</a></p>
-<p sec:authorize="isAuthenticated()"><a th:href="@{/orders}">My Orders</a></p>
-<p sec:authorize="hasRole('ADMIN')"><a th:href="@{/admin}">Admin Dashboard</a></p>
-<form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post">
-    <button type="submit">Logout</button>
-</form>
+<nav class="navbar">
+    <div class="brand">Pink Boutique</div>
+    <div class="nav-links">
+        <a class="btn btn-secondary" th:href="@{/products}">Shop</a>
+        <a class="btn btn-secondary" sec:authorize="!isAuthenticated()" th:href="@{/users/register}">Register</a>
+        <a class="btn btn-secondary" sec:authorize="!isAuthenticated()" th:href="@{/login}">Login</a>
+        <a class="btn btn-secondary" sec:authorize="isAuthenticated()" th:href="@{/cart}">My Cart</a>
+        <a class="btn btn-secondary" sec:authorize="isAuthenticated()" th:href="@{/orders}">My Orders</a>
+        <a class="btn btn-secondary" sec:authorize="hasRole('ADMIN')" th:href="@{/admin}">Admin</a>
+
+        <form class="inline-form" sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post">
+            <button type="submit">Logout</button>
+        </form>
+    </div>
+</nav>
+
+<div class="container">
+    <section class="hero">
+        <h1>Welcome to Pink Boutique</h1>
+        <p>Discover cute, trendy, and stylish fashion pieces made to make you feel confident.</p>
+        <div class="actions" style="justify-content:center; margin-top: 18px;">
+            <a class="btn btn-primary" th:href="@{/products}">Browse Products</a>
+            <a class="btn btn-secondary" th:href="@{/users/register}" sec:authorize="!isAuthenticated()">Create Account</a>
+        </div>
+    </section>
+</div>
+
 </body>
 </html>

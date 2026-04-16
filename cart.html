@@ -1,37 +1,50 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Cart</title>
+    <title>My Cart</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
 
-<h1>Your Cart</h1>
+<nav class="navbar">
+    <div class="brand">Pink Boutique</div>
+    <div class="nav-links">
+        <a class="btn btn-secondary" th:href="@{/products}">Continue Shopping</a>
+        <a class="btn btn-primary" th:href="@{/order/checkout}">Checkout</a>
+    </div>
+</nav>
 
-<p th:if="${successMessage}" th:text="${successMessage}"></p>
-<p th:if="${errorMessage}" th:text="${errorMessage}"></p>
+<div class="container">
+    <section class="page-header">
+        <h1>Your Cart</h1>
+        <p>Your selected fashion favorites are waiting for you.</p>
+    </section>
 
-<table border="1">
-    <tr>
-        <th>Product</th>
-        <th>Quantity</th>
-        <th>Price</th>
-        <th>Subtotal</th>
-        <th>Action</th>
-    </tr>
+    <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+    <div th:if="${errorMessage}" class="alert alert-error" th:text="${errorMessage}"></div>
 
-    <tr th:each="item : ${cartItems}">
-        <td th:text="${item.product.title}"></td>
-        <td th:text="${item.quantity}"></td>
-        <td th:text="${item.product.price}"></td>
-        <td th:text="${item.product.price * item.quantity}"></td>
-        <td>
-            <a th:href="@{/cart/remove/{id}(id=${item.id})}">Remove</a>
-        </td>
-    </tr>
-</table>
+    <div class="table-card">
+        <table>
+            <tr>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Subtotal</th>
+                <th>Action</th>
+            </tr>
 
-<p><a th:href="@{/products}">Continue Shopping</a></p>
-<p><a th:href="@{/order/checkout}">Checkout</a></p>
+            <tr th:each="item : ${cartItems}">
+                <td th:text="${item.product.title}"></td>
+                <td th:text="${item.quantity}"></td>
+                <td>€<span th:text="${item.product.price}"></span></td>
+                <td>€<span th:text="${item.product.price * item.quantity}"></span></td>
+                <td>
+                    <a class="btn btn-danger" th:href="@{/cart/remove/{id}(id=${item.id})}">Remove</a>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
 
 </body>
 </html>

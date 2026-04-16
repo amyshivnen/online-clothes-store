@@ -2,23 +2,44 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Admin Dashboard</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
 
-<h1>Admin Dashboard</h1>
+<div class="container">
+    <section class="page-header">
+        <h1>Admin Dashboard</h1>
+        <p>Manage your boutique store beautifully and easily.</p>
+    </section>
 
-<p>Total Products: <span th:text="${productCount}"></span></p>
-<p>Total Users: <span th:text="${userCount}"></span></p>
-<p>Total Orders: <span th:text="${orderCount}"></span></p>
+    <div class="stats-grid">
+        <div class="stat-card">
+            <h3>Total Products</h3>
+            <p th:text="${productCount}"></p>
+        </div>
+        <div class="stat-card">
+            <h3>Total Users</h3>
+            <p th:text="${userCount}"></p>
+        </div>
+        <div class="stat-card">
+            <h3>Total Orders</h3>
+            <p th:text="${orderCount}"></p>
+        </div>
+    </div>
 
-<ul>
-    <li><a th:href="@{/products}">Manage Products</a></li>
-    <li><a th:href="@{/admin/users}">View Users</a></li>
-    <li><a th:href="@{/admin/orders}">View Orders</a></li>
-</ul>
+    <div class="card">
+        <div class="actions">
+            <a class="btn btn-primary" th:href="@{/products}">Manage Products</a>
+            <a class="btn btn-secondary" th:href="@{/admin/users}">View Users</a>
+            <a class="btn btn-secondary" th:href="@{/admin/orders}">View Orders</a>
+            <a class="btn btn-secondary" th:href="@{/}">Home</a>
+        </div>
 
-<p>Default admin login: admin@clothesstore.com / admin123</p>
-<p><a th:href="@{/}">Home</a></p>
+        <p style="margin-top: 20px; color: var(--muted);">
+            Default admin login: <strong>admin@clothesstore.com</strong> / <strong>admin123</strong>
+        </p>
+    </div>
+</div>
 
 </body>
 </html>

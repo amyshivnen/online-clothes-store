@@ -3,79 +3,82 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <title>Products</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
 
-<h1>Products</h1>
+<nav class="navbar">
+    <div class="brand">Pink Boutique ✨</div>
+    <div class="nav-links">
+        <a class="btn btn-secondary" th:href="@{/}">Home</a>
+        <a class="btn btn-secondary" th:href="@{/cart}" sec:authorize="isAuthenticated()">Cart</a>
+        <a class="btn btn-secondary" th:href="@{/orders}" sec:authorize="isAuthenticated()">Orders</a>
+        <a class="btn btn-secondary" sec:authorize="hasRole('ADMIN')" th:href="@{/products/new}">Add Product</a>
+    </div>
+</nav>
 
-<p th:if="${successMessage}" th:text="${successMessage}"></p>
-<p th:if="${errorMessage}" th:text="${errorMessage}"></p>
+<div class="container">
+    <section class="page-header">
+        <h1>Our Collection</h1>
+    </section>
 
-<form th:action="@{/products}" method="get">
-    <input type="text" name="keyword" placeholder="Search by title, category or manufacturer" th:value="${keyword}">
-    <button type="submit">Search</button>
-</form>
+    <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+    <div th:if="${errorMessage}" class="alert alert-error" th:text="${errorMessage}"></div>
 
-<p>
-    Sort:
-    <a th:href="@{/products(sortField='title', sortDir='asc')}">Title Asc</a> |
-    <a th:href="@{/products(sortField='title', sortDir='desc')}">Title Desc</a> |
-    <a th:href="@{/products(sortField='manufacturer', sortDir='asc')}">Manufacturer Asc</a> |
-    <a th:href="@{/products(sortField='manufacturer', sortDir='desc')}">Manufacturer Desc</a> |
-    <a th:href="@{/products(sortField='price', sortDir='asc')}">Price Asc</a> |
-    <a th:href="@{/products(sortField='price', sortDir='desc')}">Price Desc</a>
-</p>
+    <div class="card">
+        <form class="search-bar" th:action="@{/products}" method="get">
+            <input type="text" name="keyword" placeholder="Search by title, category or manufacturer" th:value="${keyword}">
+            <button type="submit">Search</button>
+        </form>
 
-<p sec:authorize="hasRole('ADMIN')">
-    <a th:href="@{/products/new}">Add New Product</a>
-</p>
+        <div class="sort-links">
+            <span class="badge">Sort:</span>
+            <a th:href="@{/products(sortField='title', sortDir='asc')}">Title ↑</a>
+            <a th:href="@{/products(sortField='title', sortDir='desc')}">Title ↓</a>
+            <a th:href="@{/products(sortField='manufacturer', sortDir='asc')}">Brand ↑</a>
+            <a th:href="@{/products(sortField='manufacturer', sortDir='desc')}">Brand ↓</a>
+            <a th:href="@{/products(sortField='price', sortDir='asc')}">Price ↑</a>
+            <a th:href="@{/products(sortField='price', sortDir='desc')}">Price ↓</a>
+        </div>
+    </div>
 
-<table border="1">
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Title</th>
-            <th>Manufacturer</th>
-            <th>Category</th>
-            <th>Price</th>
-            <th>Stock</th>
-            <th>Image URL</th>
-            <th>Description</th>
-            <th>Action</th>
-            <th sec:authorize="hasRole('ADMIN')">Restock</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr th:each="product : ${products}">
-            <td th:text="${product.id}"></td>
-            <td th:text="${product.title}"></td>
-            <td th:text="${product.manufacturer}"></td>
-            <td th:text="${product.category}"></td>
-            <td th:text="${product.price}"></td>
-            <td th:text="${product.stockQuantity}"></td>
-            <td th:text="${product.imageUrl}"></td>
-            <td th:text="${product.description}"></td>
-            <td>
-                <a th:href="@{/products/{id}(id=${product.id})}">View</a>
-                <span sec:authorize="hasRole('ADMIN')">
-                    |
-                    <a th:href="@{/products/edit/{id}(id=${product.id})}">Edit</a>
-                    |
-                    <a th:href="@{/products/delete/{id}(id=${product.id})}"
-                       onclick="return confirm('Are you sure you want to delete this product?');">Delete</a>
-                </span>
-            </td>
-            <td sec:authorize="hasRole('ADMIN')">
-                <form th:action="@{/admin/products/restock/{id}(id=${product.id})}" method="post">
-                    <input type="number" name="quantity" min="1" placeholder="Qty" required>
-                    <button type="submit">Restock</button>
-                </form>
-            </td>
-        </tr>
-    </tbody>
-</table>
+    <div class="product-grid">
+        <div class="product-card" th:each="product : ${products}">
+            <img class="product-image"
+                 th:src="${product.imageUrl != null and !#strings.isEmpty(product.imageUrl) ? product.imageUrl : 'https://via.placeholder.com/400x300?text=Fashion+Item'}"
+                 alt="Product image">
 
-<p><a th:href="@{/}">Home</a></p>
+            <div class="product-body">
+                <div class="product-title" th:text="${product.title}"></div>
+                <div class="product-meta">
+                    <span th:text="${product.manufacturer}"></span> •
+                    <span th:text="${product.category}"></span>
+                </div>
+                <div class="price">€<span th:text="${product.price}"></span></div>
+                <p><strong>Stock:</strong> <span th:text="${product.stockQuantity}"></span></p>
+                <p th:text="${product.description}"></p>
+
+                <div class="actions">
+                    <a class="btn btn-primary" th:href="@{/products/{id}(id=${product.id})}">View</a>
+
+                    <span sec:authorize="hasRole('ADMIN')" class="actions">
+                        <a class="btn btn-secondary" th:href="@{/products/edit/{id}(id=${product.id})}">Edit</a>
+                        <a class="btn btn-danger"
+                           th:href="@{/products/delete/{id}(id=${product.id})}"
+                           onclick="return confirm('Are you sure you want to delete this product?');">Delete</a>
+                    </span>
+                </div>
+
+                <div sec:authorize="hasRole('ADMIN')" style="margin-top: 14px;">
+                    <form th:action="@{/admin/products/restock/{id}(id=${product.id})}" method="post" class="actions">
+                        <input class="small-input" type="number" name="quantity" min="1" placeholder="Qty" required>
+                        <button type="submit">Restock</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 </body>
 </html>
